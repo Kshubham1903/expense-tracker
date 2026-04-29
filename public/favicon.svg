@@ -1,0 +1,30 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="64" height="64" fill="#0F1419" rx="12"/>
+  
+  <!-- Ledger book outline (luxury gold) -->
+  <g stroke="#D4AF37" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left page -->
+    <path d="M 16 12 L 30 12 L 30 52 L 16 52 Q 14 52 14 50 L 14 14 Q 14 12 16 12"/>
+    
+    <!-- Right page -->
+    <path d="M 30 12 L 48 12 Q 50 12 50 14 L 50 50 Q 50 52 48 52 L 30 52"/>
+    
+    <!-- Center spine -->
+    <line x1="30" y1="12" x2="30" y2="52"/>
+    
+    <!-- Horizontal lines (transaction entries) -->
+    <line x1="18" y1="24" x2="28" y2="24"/>
+    <line x1="18" y1="32" x2="28" y2="32"/>
+    <line x1="18" y1="40" x2="28" y2="40"/>
+    
+    <line x1="35" y1="24" x2="48" y2="24"/>
+    <line x1="35" y1="32" x2="48" y2="32"/>
+    <line x1="35" y1="40" x2="48" y2="40"/>
+  </g>
+  
+  <!-- Dollar sign accent (sage green - subtle) -->
+  <g fill="#9B8B6F" opacity="0.6">
+    <circle cx="32" cy="48" r="3"/>
+  </g>
+</svg>

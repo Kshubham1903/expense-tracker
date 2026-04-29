@@ -187,8 +187,9 @@ export function useExpenses() {
         userID: user.uid,
         timestamp: new Date().toISOString(),
       });
-      setMutating(false);
       throw new Error(`Failed to save expense: ${err.message}`);
+    } finally {
+      setMutating(false);
     }
   };
 

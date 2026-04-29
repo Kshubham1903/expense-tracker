@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ArrowDownLeft, ArrowUpRight, PlusCircle } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, PlusCircle, Trash2 } from 'lucide-react';
 import { useBalances } from '../hooks/useBalances';
 import { ACCOUNT_OPTIONS, TRANSACTION_MODE_OPTIONS, getAccountLabel, getTransactionModeLabel } from '../utils/ledger';
 import { formatDate, formatMoney } from '../utils/expenses';
@@ -17,8 +17,9 @@ function BalanceCard({ label, value, hint }) {
 }
 
 export default function BalancesPage() {
-  const { balances, transactions, loading, error, mutating, addTransaction } = useBalances();
+  const { balances, transactions, loading, error, mutating, addTransaction, deleteTransaction, setError } = useBalances();
   const [filter, setFilter] = useState('all');
+  const [deletingId, setDeletingId] = useState('');
   const [formState, setFormState] = useState({
     type: 'bank',
     mode: 'credit',
@@ -56,6 +57,25 @@ export default function BalancesPage() {
       }));
     } catch (nextError) {
       setFormError(nextError.message);
+    }
+  };
+
+  const handleDelete = async (transactionId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this transaction?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(transactionId);
+    setError('');
+
+    try {
+      await deleteTransaction(transactionId);
+    } catch (nextError) {
+      setError('Failed to delete transaction');
+    } finally {
+      setDeletingId('');
     }
   };
 
@@ -188,7 +208,7 @@ export default function BalancesPage() {
               filteredTransactions.map((transaction) => (
                 <article
                   key={transaction.id}
-                  className="rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]"
+                  className="group rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -211,11 +231,23 @@ export default function BalancesPage() {
                       <p className="mt-2 text-xs text-text-subtle">{formatDate(transaction.date)}</p>
                     </div>
 
-                    <div className="text-right">
-                      <p className={transaction.mode === 'credit' ? 'text-emerald-300' : 'text-rose-300'}>
-                        {transaction.mode === 'credit' ? <ArrowUpRight className="inline h-4 w-4" /> : <ArrowDownLeft className="inline h-4 w-4" />} {formatMoney(transaction.amount)}
-                      </p>
-                      <p className="text-xs text-text-subtle">{transaction.mode === 'credit' ? 'Added to balance' : 'Spent from balance'}</p>
+                    <div className="flex items-start gap-2 text-right">
+                      <div>
+                        <p className={transaction.mode === 'credit' ? 'text-emerald-300' : 'text-rose-300'}>
+                          {transaction.mode === 'credit' ? <ArrowUpRight className="inline h-4 w-4" /> : <ArrowDownLeft className="inline h-4 w-4" />} {formatMoney(transaction.amount)}
+                        </p>
+                        <p className="text-xs text-text-subtle">{transaction.mode === 'credit' ? 'Added to balance' : 'Spent from balance'}</p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(transaction.id)}
+                        disabled={deletingId === transaction.id || mutating}
+                        aria-label={`Delete transaction ${transaction.description}`}
+                        className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full text-text-subtle opacity-100 transition-colors duration-200 hover:bg-white/5 hover:text-text-primary md:opacity-0 md:group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
                   </div>
                 </article>

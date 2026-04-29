@@ -24,7 +24,7 @@ const routeMeta = {
 };
 
 export default function AppShell() {
-  const { user, logout } = useAuth();
+  const { user, logout, displayName } = useAuth();
   const location = useLocation();
   const meta = routeMeta[location.pathname] || routeMeta['/dashboard'];
 
@@ -34,7 +34,7 @@ export default function AppShell() {
       <Sidebar />
 
       <div className="lg:pl-72">
-        <Navbar title={meta.title} subtitle={meta.subtitle} user={user} onLogout={logout} />
+        <Navbar title={meta.title} subtitle={meta.subtitle} user={user} displayName={displayName} onLogout={logout} />
 
         <main className="mx-auto w-full max-w-7xl px-4 pb-28 pt-5 sm:px-6 lg:px-8">
           <Outlet />

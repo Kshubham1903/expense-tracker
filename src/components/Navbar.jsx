@@ -1,6 +1,11 @@
 import { LogOut, ShieldCheck } from 'lucide-react';
 
-export default function Navbar({ title, subtitle, user, onLogout }) {
+function initialsFromName(name) {
+  if (!name) return '';
+  return String(name).trim().charAt(0).toUpperCase();
+}
+
+export default function Navbar({ title, subtitle, user, onLogout, displayName }) {
   return (
     <header className="sticky top-0 z-20 border-b border-white/5 bg-page/85 backdrop-blur-xl">
       <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -14,9 +19,14 @@ export default function Navbar({ title, subtitle, user, onLogout }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden max-w-[16rem] rounded-full border border-white/6 bg-white/[0.04] px-4 py-2 text-right sm:block">
-            <p className="truncate text-sm font-medium text-text-primary">{user?.email}</p>
-            <p className="text-xs text-text-subtle">Authed session</p>
+          <div className="hidden max-w-[16rem] rounded-full border border-white/6 bg-white/[0.04] px-4 py-2 text-right sm:flex sm:items-center sm:gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md border border-white/6 bg-white/[0.02] text-sm font-semibold text-luxury-gold">
+              {initialsFromName(displayName)}
+            </div>
+            <div className="min-w-0 text-right">
+              <p className="truncate text-sm font-medium text-text-primary">{displayName || user?.email}</p>
+              <p className="text-xs text-text-subtle">Authed session</p>
+            </div>
           </div>
 
           <button

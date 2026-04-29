@@ -4,7 +4,7 @@ import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 
 export default function AuthPage() {
-  const { user, loading, signIn, signUp, error, setError, firebaseReady, googleSignIn, googleLoading } = useAuth();
+  const { user, loading, signIn, signUp, error, setError, firebaseReady, googleSignIn, googleSignUp, googleLoading } = useAuth();
   const [mode, setMode] = useState('login');
   const [formState, setFormState] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +50,11 @@ export default function AuthPage() {
   const handleGoogle = async () => {
     setError('');
     try {
-      await googleSignIn();
+      if (mode === 'login') {
+        await googleSignIn();
+      } else {
+        await googleSignUp();
+      }
       navigate('/dashboard', { replace: true });
     } catch (nextError) {
       setError(nextError?.message || 'Google sign-in failed.');

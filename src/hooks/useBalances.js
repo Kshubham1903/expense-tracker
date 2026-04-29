@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { doc, onSnapshot, query, runTransaction, serverTimestamp, where } from 'firebase/firestore';
+import { deleteDoc, doc, onSnapshot, query, runTransaction, serverTimestamp, where } from 'firebase/firestore';
 import { useAuth } from './useAuth.jsx';
 import { balancesCollection, db, hasFirebaseConfig, transactionsCollection } from '../services/firebase';
 import { isAccountType, isTransactionMode, roundMoney, toTimestampFromDateInput } from '../utils/ledger';
@@ -181,6 +181,61 @@ export function useBalances() {
     }
   };
 
+  const deleteTransaction = async (transactionId) => {
+    if (!user) {
+      throw new Error('You must be signed in to manage balances.');
+    }
+
+    setMutating(true);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const transactionRef = doc(transactionsCollection(), transactionId);
+        const transactionSnapshot = await transaction.get(transactionRef);
+
+        if (!transactionSnapshot.exists()) {
+          throw new Error('Transaction not found.');
+        }
+
+        const transactionData = transactionSnapshot.data();
+
+        if (transactionData.uid !== user.uid) {
+          throw new Error('Transaction not found.');
+        }
+
+        if (!isAccountType(transactionData.type) || !isTransactionMode(transactionData.mode)) {
+          throw new Error('Transaction not found.');
+        }
+
+        const numericAmount = roundMoney(transactionData.amount);
+        const balanceRef = doc(balancesCollection(), `${user.uid}_${transactionData.type}`);
+        const balanceSnapshot = await transaction.get(balanceRef);
+        const currentBalance = balanceSnapshot.exists() ? Number(balanceSnapshot.data().balance || 0) : 0;
+        const delta = transactionData.mode === 'credit' ? -numericAmount : numericAmount;
+        const nextBalance = roundMoney(currentBalance + delta);
+
+        if (nextBalance < 0) {
+          throw new Error('This deletion would create a negative balance.');
+        }
+
+        transaction.set(
+          balanceRef,
+          {
+            uid: user.uid,
+            type: transactionData.type,
+            balance: nextBalance,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      });
+
+      await deleteDoc(doc(transactionsCollection(), transactionId));
+    } finally {
+      setMutating(false);
+    }
+  };
+
   return {
     balances: balancesByType,
     transactions: sortedTransactions,
@@ -189,5 +244,6 @@ export function useBalances() {
     mutating,
     setError,
     addTransaction,
+    deleteTransaction,
   };
 }

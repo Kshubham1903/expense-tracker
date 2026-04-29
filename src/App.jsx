@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth.jsx';
 
 const AuthPage = lazy(() => import('./pages/Auth'));
 const DashboardPage = lazy(() => import('./pages/Dashboard'));
+const BalancesPage = lazy(() => import('./pages/Balances'));
 const ReportsPage = lazy(() => import('./pages/Reports'));
 const ProfilePage = lazy(() => import('./pages/Profile'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
@@ -40,6 +41,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/balances" element={<BalancesPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

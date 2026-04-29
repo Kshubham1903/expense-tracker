@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 import { CATEGORY_OPTIONS } from '../utils/expenses';
+import { ACCOUNT_OPTIONS } from '../utils/ledger';
 
 const initialState = {
   description: '',
   amount: '',
   category: 'Food',
+  paymentMode: 'bank',
   expenseDate: new Date().toISOString().slice(0, 10),
 };
 
@@ -88,6 +90,21 @@ export default function ExpenseForm({ onSubmit, mutating }) {
             {CATEGORY_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="sm:col-span-2">
+          <span className="mb-2 block text-sm text-text-secondary">Payment mode</span>
+          <select
+            value={formState.paymentMode}
+            onChange={updateField('paymentMode')}
+            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
+          >
+            {ACCOUNT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>

@@ -9,6 +9,10 @@ const routeMeta = {
     title: 'Dashboard',
     subtitle: 'Track spending without the noise.',
   },
+  '/balances': {
+    title: 'Balances',
+    subtitle: 'Manage bank, UPI Lite, and cash independently.',
+  },
   '/reports': {
     title: 'Reports',
     subtitle: 'Review and export clean statements.',

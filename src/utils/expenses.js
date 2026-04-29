@@ -30,7 +30,11 @@ export function formatDate(value) {
     return 'Unknown date';
   }
 
-  const date = value instanceof Date ? value : new Date(`${value}T00:00:00`);
+  const date = typeof value.toDate === 'function'
+    ? value.toDate()
+    : value instanceof Date
+      ? value
+      : new Date(`${value}T00:00:00`);
   return Number.isNaN(date.getTime()) ? 'Unknown date' : shortDateFormatter.format(date);
 }
 
@@ -43,11 +47,12 @@ function escapeCsvValue(value) {
 }
 
 export function downloadExpensesCsv(expenses, filename = 'expenses.csv') {
-  const header = ['Date', 'Description', 'Category', 'Amount', 'Created At'];
+  const header = ['Date', 'Description', 'Category', 'Payment Mode', 'Amount', 'Created At'];
   const rows = expenses.map((expense) => [
     expense.expenseDate,
     expense.description,
     expense.category,
+    expense.paymentMode || 'bank',
     Number(expense.amount || 0).toFixed(2),
     expense.createdAt?.toDate ? expense.createdAt.toDate().toISOString() : '',
   ]);

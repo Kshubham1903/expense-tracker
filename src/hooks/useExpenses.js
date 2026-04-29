@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  addDoc,
-  deleteDoc,
   doc,
   onSnapshot,
-  orderBy,
   query,
+  runTransaction,
   serverTimestamp,
+  where,
 } from 'firebase/firestore';
 import { useAuth } from './useAuth.jsx';
-import { db, expensesCollection, hasFirebaseConfig } from '../services/firebase';
+import { balancesCollection, db, expensesCollection, hasFirebaseConfig, transactionsCollection } from '../services/firebase';
 import {
   CATEGORY_OPTIONS,
   buildExpenseStats,
   downloadExpensesCsv,
   parseExpenseDate,
 } from '../utils/expenses';
+import { isAccountType, roundMoney, toTimestampFromDateInput } from '../utils/ledger';
 
 export function useExpenses() {
   const { user } = useAuth();
@@ -52,12 +52,18 @@ export function useExpenses() {
     setError('');
 
     const expensesRef = expensesCollection(user.uid);
-    const expensesQuery = query(expensesRef, orderBy('createdAt', 'desc'));
+    const expensesQuery = query(expensesRef, where('uid', '==', user.uid));
 
     const unsubscribe = onSnapshot(
       expensesQuery,
       (snapshot) => {
-        const rows = snapshot.docs.map((currentDoc) => ({ id: currentDoc.id, ...currentDoc.data() }));
+        const rows = snapshot.docs
+          .map((currentDoc) => ({ id: currentDoc.id, ...currentDoc.data() }))
+          .sort((left, right) => {
+            const leftTime = left.createdAt?.toMillis ? left.createdAt.toMillis() : 0;
+            const rightTime = right.createdAt?.toMillis ? right.createdAt.toMillis() : 0;
+            return rightTime - leftTime;
+          });
         setExpenses(rows);
         setLoading(false);
         console.log('✓ Synced', rows.length, 'expenses from Firestore');
@@ -72,13 +78,14 @@ export function useExpenses() {
     return () => unsubscribe();
   }, [user]);
 
-  const addExpense = async ({ description, amount, category, expenseDate }) => {
+  const addExpense = async ({ description, amount, category, expenseDate, paymentMode }) => {
     if (!user) {
       throw new Error('You must be signed in to add expenses.');
     }
 
     const cleanDescription = String(description || '').trim();
     const cleanCategory = CATEGORY_OPTIONS.includes(category) ? category : 'Other';
+    const cleanPaymentMode = isAccountType(paymentMode) ? paymentMode : 'bank';
     const numericAmount = Number(amount);
 
     if (cleanDescription.length < 2 || cleanDescription.length > 80) {
@@ -115,19 +122,59 @@ export function useExpenses() {
 
     try {
       console.log('📤 Step 1: Starting Firestore write for user:', user.uid);
-      console.log('📤 Step 2: Expense data:', { description: cleanDescription, amount: numericAmount, category: cleanCategory });
-      
-      const collectionRef = expensesCollection(user.uid);
-      console.log('📤 Step 3: Collection ref created');
-      
-      console.log('📤 Step 4: About to call addDoc()...');
-      const docRef = await addDoc(collectionRef, {
-        uid: user.uid,
+      console.log('📤 Step 2: Expense data:', {
         description: cleanDescription,
-        amount: Number(numericAmount.toFixed(2)),
+        amount: numericAmount,
         category: cleanCategory,
-        expenseDate,
-        createdAt: serverTimestamp(),
+        paymentMode: cleanPaymentMode,
+      });
+
+      console.log('📤 Step 3: About to call Firestore transaction...');
+      const docRef = await runTransaction(db, async (transaction) => {
+        const expenseRef = doc(expensesCollection(user.uid));
+        const balanceRef = doc(balancesCollection(), `${user.uid}_${cleanPaymentMode}`);
+        const transactionRef = doc(transactionsCollection());
+        const balanceSnapshot = await transaction.get(balanceRef);
+        const currentBalance = balanceSnapshot.exists() ? Number(balanceSnapshot.data().balance || 0) : 0;
+        const nextBalance = roundMoney(currentBalance - numericAmount);
+
+        if (nextBalance < 0) {
+          throw new Error('This expense would overdraw the selected account.');
+        }
+
+        transaction.set(
+          balanceRef,
+          {
+            uid: user.uid,
+            type: cleanPaymentMode,
+            balance: nextBalance,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+
+        transaction.set(expenseRef, {
+          uid: user.uid,
+          description: cleanDescription,
+          amount: roundMoney(numericAmount),
+          category: cleanCategory,
+          expenseDate,
+          paymentMode: cleanPaymentMode,
+          transactionId: transactionRef.id,
+          createdAt: serverTimestamp(),
+        });
+
+        transaction.set(transactionRef, {
+          uid: user.uid,
+          type: cleanPaymentMode,
+          mode: 'debit',
+          amount: roundMoney(numericAmount),
+          description: cleanDescription,
+          date: toTimestampFromDateInput(expenseDate),
+          createdAt: serverTimestamp(),
+        });
+
+        return expenseRef;
       });
       
       clearTimeout(timeoutHandle);
@@ -150,7 +197,39 @@ export function useExpenses() {
       throw new Error('You must be signed in to delete expenses.');
     }
 
-    await deleteDoc(doc(expensesCollection(user.uid), expenseId));
+    await runTransaction(db, async (transaction) => {
+      const expenseRef = doc(expensesCollection(user.uid), expenseId);
+      const expenseSnapshot = await transaction.get(expenseRef);
+
+      if (!expenseSnapshot.exists()) {
+        throw new Error('Expense not found.');
+      }
+
+      const expense = expenseSnapshot.data();
+      const paymentMode = isAccountType(expense.paymentMode) ? expense.paymentMode : 'bank';
+      const numericAmount = roundMoney(expense.amount);
+      const balanceRef = doc(balancesCollection(), `${user.uid}_${paymentMode}`);
+      const balanceSnapshot = await transaction.get(balanceRef);
+      const currentBalance = balanceSnapshot.exists() ? Number(balanceSnapshot.data().balance || 0) : 0;
+      const nextBalance = roundMoney(currentBalance + numericAmount);
+
+      transaction.set(
+        balanceRef,
+        {
+          uid: user.uid,
+          type: paymentMode,
+          balance: nextBalance,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+
+      if (expense.transactionId) {
+        transaction.delete(doc(transactionsCollection(), expense.transactionId));
+      }
+
+      transaction.delete(expenseRef);
+    });
   };
 
   const exportCsv = (rows = expenses) => {

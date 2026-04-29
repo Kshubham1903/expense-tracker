@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, LineChart, UserCircle2 } from 'lucide-react';
+import { Landmark, LayoutDashboard, LineChart, UserCircle2 } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/balances', label: 'Balances', icon: Landmark },
   { to: '/reports', label: 'Reports', icon: LineChart },
   { to: '/profile', label: 'Profile', icon: UserCircle2 },
 ];

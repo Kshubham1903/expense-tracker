@@ -10,12 +10,31 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == userId;
     }
 
-    // Temporarily permissive to test - will tighten after verification
     function isValidExpenseCreate(userId) {
-      // Just verify basic structure - relax validation temporarily
       return request.resource.data.uid == userId &&
         request.resource.data.description is string &&
-        request.resource.data.amount is number;
+        request.resource.data.amount is number &&
+        request.resource.data.category is string &&
+        request.resource.data.expenseDate is string &&
+        request.resource.data.paymentMode in ['bank', 'upi', 'cash'] &&
+        request.resource.data.transactionId is string;
+    }
+
+    function isValidBalanceWrite(userId) {
+      return request.resource.data.uid == userId &&
+        request.resource.data.type in ['bank', 'upi', 'cash'] &&
+        request.resource.data.balance is number &&
+        request.resource.data.balance >= 0;
+    }
+
+    function isValidTransactionCreate(userId) {
+      return request.resource.data.uid == userId &&
+        request.resource.data.type in ['bank', 'upi', 'cash'] &&
+        request.resource.data.mode in ['credit', 'debit'] &&
+        request.resource.data.amount is number &&
+        request.resource.data.amount > 0 &&
+        request.resource.data.description is string &&
+        request.resource.data.date is timestamp;
     }
 
     // User profile - allow reads/writes for own profile
@@ -29,6 +48,18 @@ service cloud.firestore {
         allow update: if ownsUserData(userId) && request.resource.data.uid == userId;
         allow delete: if ownsUserData(userId);
       }
+    }
+
+    match /balances/{balanceId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create, update: if signedIn() && isValidBalanceWrite(request.auth.uid);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && isValidTransactionCreate(request.auth.uid);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
     // Deny all other access (default deny)

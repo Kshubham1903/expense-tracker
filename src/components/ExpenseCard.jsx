@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Trash2 } from 'lucide-react';
 import { formatDate, formatMoney } from '../utils/expenses';
+import { getAccountLabel } from '../utils/ledger';
 
 function ExpenseCard({ expense, onDelete }) {
   return (
@@ -11,6 +12,9 @@ function ExpenseCard({ expense, onDelete }) {
             <h3 className="truncate text-sm font-semibold text-text-primary">{expense.description}</h3>
             <span className="rounded-full border border-white/6 bg-white/[0.04] px-2.5 py-1 text-[0.7rem] text-text-secondary">
               {expense.category}
+            </span>
+            <span className="rounded-full border border-luxury-gold/20 bg-luxury-gold/10 px-2.5 py-1 text-[0.7rem] text-luxury-gold">
+              {getAccountLabel(expense.paymentMode || 'bank')}
             </span>
           </div>
           <p className="mt-2 text-xs text-text-subtle">{formatDate(expense.expenseDate)}</p>

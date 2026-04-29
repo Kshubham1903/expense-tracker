@@ -1,0 +1,248 @@
+import { useMemo, useState } from 'react';
+import { ArrowDownLeft, ArrowUpRight, PlusCircle } from 'lucide-react';
+import { useBalances } from '../hooks/useBalances';
+import { ACCOUNT_OPTIONS, TRANSACTION_MODE_OPTIONS, getAccountLabel, getTransactionModeLabel } from '../utils/ledger';
+import { formatDate, formatMoney } from '../utils/expenses';
+
+const accountFilters = [{ value: 'all', label: 'All accounts' }, ...ACCOUNT_OPTIONS];
+
+function BalanceCard({ label, value, hint }) {
+  return (
+    <section className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+      <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">{label}</p>
+      <p className="mt-3 text-3xl font-semibold tracking-tight text-luxury-gold">{value}</p>
+      <p className="mt-2 text-sm text-text-secondary">{hint}</p>
+    </section>
+  );
+}
+
+export default function BalancesPage() {
+  const { balances, transactions, loading, error, mutating, addTransaction } = useBalances();
+  const [filter, setFilter] = useState('all');
+  const [formState, setFormState] = useState({
+    type: 'bank',
+    mode: 'credit',
+    amount: '',
+    description: '',
+    date: new Date().toISOString().slice(0, 10),
+  });
+  const [formError, setFormError] = useState('');
+
+  const filteredTransactions = useMemo(
+    () => transactions.filter((transaction) => filter === 'all' || transaction.type === filter),
+    [transactions, filter],
+  );
+
+  const totalManagedBalance = useMemo(
+    () => Object.values(balances).reduce((sum, value) => sum + Number(value || 0), 0),
+    [balances],
+  );
+
+  const updateField = (field) => (event) => {
+    setFormState((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormError('');
+
+    try {
+      await addTransaction(formState);
+      setFormState((current) => ({
+        ...current,
+        amount: '',
+        description: '',
+        date: new Date().toISOString().slice(0, 10),
+      }));
+    } catch (nextError) {
+      setFormError(nextError.message);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <section className="grid gap-4 md:grid-cols-3">
+        <BalanceCard label="Bank Balance" value={formatMoney(balances.bank)} hint="Dedicated bank account" />
+        <BalanceCard label="UPI Lite Balance" value={formatMoney(balances.upi)} hint="Instant mobile spending" />
+        <BalanceCard label="Cash Balance" value={formatMoney(balances.cash)} hint={`Total managed: ${formatMoney(totalManagedBalance)}`} />
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">Transaction Entry</p>
+              <h2 className="mt-2 text-lg font-semibold text-text-primary">Add money or spend from an account</h2>
+            </div>
+            <div className="rounded-full border border-white/6 bg-white/[0.04] px-3 py-1 text-xs text-text-secondary">
+              44px touch targets
+            </div>
+          </div>
+
+          <form className="mt-5 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
+            <label>
+              <span className="mb-2 block text-sm text-text-secondary">Select account</span>
+              <select
+                value={formState.type}
+                onChange={updateField('type')}
+                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
+              >
+                {ACCOUNT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              <span className="mb-2 block text-sm text-text-secondary">Type</span>
+              <select
+                value={formState.mode}
+                onChange={updateField('mode')}
+                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
+              >
+                {TRANSACTION_MODE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              <span className="mb-2 block text-sm text-text-secondary">Amount</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                min="0"
+                value={formState.amount}
+                onChange={updateField('amount')}
+                placeholder="500.00"
+                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 placeholder:text-text-subtle focus:border-accent-sage/60"
+              />
+            </label>
+
+            <label>
+              <span className="mb-2 block text-sm text-text-secondary">Date</span>
+              <input
+                type="date"
+                value={formState.date}
+                onChange={updateField('date')}
+                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
+              />
+            </label>
+
+            <label className="sm:col-span-2">
+              <span className="mb-2 block text-sm text-text-secondary">Description</span>
+              <input
+                value={formState.description}
+                onChange={updateField('description')}
+                placeholder="Salary deposit, groceries, fuel, and more"
+                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 placeholder:text-text-subtle focus:border-accent-sage/60"
+                maxLength={120}
+              />
+            </label>
+
+            {formError ? <p className="sm:col-span-2 text-sm text-[#c9a7a4]">{formError}</p> : null}
+
+            <button
+              type="submit"
+              disabled={mutating}
+              className="sm:col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#e8ecef] px-4 text-sm font-semibold text-[#0f1419] transition-colors duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              <PlusCircle className="h-4 w-4" />
+              {mutating ? 'Saving...' : 'Add Transaction'}
+            </button>
+          </form>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">History</p>
+              <h2 className="mt-2 text-lg font-semibold text-text-primary">Account transactions</h2>
+            </div>
+
+            <label className="min-w-[11rem]">
+              <span className="sr-only">Filter by account</span>
+              <select
+                value={filter}
+                onChange={(event) => setFilter(event.target.value)}
+                className="min-h-11 w-full rounded-full border border-white/6 bg-white/[0.04] px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
+              >
+                {accountFilters.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {loading ? (
+              <LoadingRows />
+            ) : filteredTransactions.length ? (
+              filteredTransactions.map((transaction) => (
+                <article
+                  key={transaction.id}
+                  className="rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate text-sm font-semibold text-text-primary">{transaction.description}</h3>
+                        <span className="rounded-full border border-white/6 bg-white/[0.04] px-2.5 py-1 text-[0.7rem] text-text-secondary">
+                          {getAccountLabel(transaction.type)}
+                        </span>
+                        <span
+                          className={[
+                            'rounded-full px-2.5 py-1 text-[0.7rem]',
+                            transaction.mode === 'credit'
+                              ? 'border border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                              : 'border border-rose-400/20 bg-rose-400/10 text-rose-300',
+                          ].join(' ')}
+                        >
+                          {getTransactionModeLabel(transaction.mode)}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs text-text-subtle">{formatDate(transaction.date)}</p>
+                    </div>
+
+                    <div className="text-right">
+                      <p className={transaction.mode === 'credit' ? 'text-emerald-300' : 'text-rose-300'}>
+                        {transaction.mode === 'credit' ? <ArrowUpRight className="inline h-4 w-4" /> : <ArrowDownLeft className="inline h-4 w-4" />} {formatMoney(transaction.amount)}
+                      </p>
+                      <p className="text-xs text-text-subtle">{transaction.mode === 'credit' ? 'Added to balance' : 'Spent from balance'}</p>
+                    </div>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-[1.25rem] border border-dashed border-white/8 bg-white/[0.02] px-5 py-8 text-center text-sm text-text-secondary">
+                No transactions in this filter yet.
+              </div>
+            )}
+          </div>
+
+          {error ? (
+            <div className="mt-5 rounded-[1.25rem] border border-state-error/30 bg-state-error/10 p-4 text-sm text-state-error">
+              {error}
+            </div>
+          ) : null}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function LoadingRows() {
+  return Array.from({ length: 3 }, (_, index) => (
+    <div key={index} className="animate-pulse rounded-[1.25rem] border border-white/5 bg-white/[0.02] px-4 py-4">
+      <div className="h-4 w-3/4 rounded-full bg-white/6" />
+      <div className="mt-3 h-3 w-1/3 rounded-full bg-white/6" />
+    </div>
+  ));
+}

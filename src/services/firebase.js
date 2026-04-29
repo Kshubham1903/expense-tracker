@@ -50,3 +50,19 @@ export function expensesCollection(userId) {
 
   return collection(db, 'users', userId, 'expenses');
 }
+
+export function balancesCollection() {
+  if (!db) {
+    throw new Error('Firebase is not configured.');
+  }
+
+  return collection(db, 'balances');
+}
+
+export function transactionsCollection() {
+  if (!db) {
+    throw new Error('Firebase is not configured.');
+  }
+
+  return collection(db, 'transactions');
+}

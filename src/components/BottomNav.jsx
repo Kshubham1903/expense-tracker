@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, LineChart, UserCircle2 } from 'lucide-react';
+import { Landmark, LayoutDashboard, LineChart, UserCircle2 } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', label: 'Home', icon: LayoutDashboard },
+  { to: '/balances', label: 'Balances', icon: Landmark },
   { to: '/reports', label: 'Reports', icon: LineChart },
   { to: '/profile', label: 'Profile', icon: UserCircle2 },
 ];
@@ -10,7 +11,7 @@ const navItems = [
 export default function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/6 bg-page/92 px-3 py-3 backdrop-blur-xl lg:hidden">
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         {navItems.map((item) => {
           const Icon = item.icon;
 

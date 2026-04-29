@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsUserData(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    // Temporarily permissive to test - will tighten after verification
+    function isValidExpenseCreate(userId) {
+      // Just verify basic structure - relax validation temporarily
+      return request.resource.data.uid == userId &&
+        request.resource.data.description is string &&
+        request.resource.data.amount is number;
+    }
+
+    // User profile - allow reads/writes for own profile
+    match /users/{userId} {
+      allow read, write: if ownsUserData(userId);
+
+      // Expenses subcollection - user can create, read, update, delete own expenses
+      match /expenses/{expenseId} {
+        allow read: if ownsUserData(userId);
+        allow create: if ownsUserData(userId) && isValidExpenseCreate(userId);
+        allow update: if ownsUserData(userId) && request.resource.data.uid == userId;
+        allow delete: if ownsUserData(userId);
+      }
+    }
+
+    // Deny all other access (default deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

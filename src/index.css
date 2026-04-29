@@ -1,0 +1,75 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Luxury Global Styles */
+* {
+  @apply transition-colors duration-200;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-dark-primary text-text-primary;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+/* Premium Input Focus */
+input:focus,
+textarea:focus,
+select:focus {
+  @apply outline-none;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    @apply !transition-none !animation-none;
+  }
+}
+
+/* Utility Classes */
+.luxury-separator {
+  @apply bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 h-px;
+}
+
+.luxury-text-gradient {
+  background: linear-gradient(135deg, #C6A75E 0%, #D4B574 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-spacing {
+  @apply py-section px-subsection;
+}
+
+.hover-lift {
+  @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-soft-lg;
+}
+
+.focus-gold {
+  @apply focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:ring-offset-2 focus:ring-offset-dark-card;
+}

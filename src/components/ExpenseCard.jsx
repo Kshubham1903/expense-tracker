@@ -6,10 +6,10 @@ import { getAccountLabel } from '../utils/ledger';
 function ExpenseCard({ expense, onDelete }) {
   return (
     <article className="group rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate text-sm font-semibold text-text-primary">{expense.description}</h3>
+            <h3 className="truncate break-words text-sm font-semibold text-text-primary">{expense.description}</h3>
             <span className="rounded-full border border-white/6 bg-white/[0.04] px-2.5 py-1 text-[0.7rem] text-text-secondary">
               {expense.category}
             </span>
@@ -20,8 +20,8 @@ function ExpenseCard({ expense, onDelete }) {
           <p className="mt-2 text-xs text-text-subtle">{formatDate(expense.expenseDate)}</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-right">
+        <div className="flex items-center justify-between gap-3 sm:justify-end">
+          <div className="text-left sm:text-right">
             <p className="text-sm font-semibold text-text-primary">{formatMoney(expense.amount)}</p>
             <p className="text-xs text-text-subtle">Cloud synced</p>
           </div>

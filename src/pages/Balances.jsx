@@ -80,21 +80,21 @@ export default function BalancesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <section className="grid gap-4 md:grid-cols-3">
+    <div className="space-y-6 overflow-x-hidden">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <BalanceCard label="Bank Balance" value={formatMoney(balances.bank)} hint="Dedicated bank account" />
         <BalanceCard label="UPI Lite Balance" value={formatMoney(balances.upi)} hint="Instant mobile spending" />
         <BalanceCard label="Cash Balance" value={formatMoney(balances.cash)} hint={`Total managed: ${formatMoney(totalManagedBalance)}`} />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-4 shadow-soft backdrop-blur sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">Transaction Entry</p>
-              <h2 className="mt-2 text-lg font-semibold text-text-primary">Add money or spend from an account</h2>
+              <h2 className="mt-2 break-words text-lg font-semibold text-text-primary">Add money or spend from an account</h2>
             </div>
-            <div className="rounded-full border border-white/6 bg-white/[0.04] px-3 py-1 text-xs text-text-secondary">
+            <div className="hidden rounded-full border border-white/6 bg-white/[0.04] px-3 py-1 text-xs text-text-secondary sm:block">
               44px touch targets
             </div>
           </div>
@@ -178,14 +178,14 @@ export default function BalancesPage() {
           </form>
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+        <div className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-4 shadow-soft backdrop-blur sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">History</p>
               <h2 className="mt-2 text-lg font-semibold text-text-primary">Account transactions</h2>
             </div>
 
-            <label className="min-w-[11rem]">
+            <label className="w-full min-w-0 sm:w-auto sm:min-w-[11rem]">
               <span className="sr-only">Filter by account</span>
               <select
                 value={filter}
@@ -213,7 +213,7 @@ export default function BalancesPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate text-sm font-semibold text-text-primary">{transaction.description}</h3>
+                        <h3 className="truncate break-words text-sm font-semibold text-text-primary">{transaction.description}</h3>
                         <span className="rounded-full border border-white/6 bg-white/[0.04] px-2.5 py-1 text-[0.7rem] text-text-secondary">
                           {getAccountLabel(transaction.type)}
                         </span>
@@ -228,15 +228,15 @@ export default function BalancesPage() {
                           {getTransactionModeLabel(transaction.mode)}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs text-text-subtle">{formatDate(transaction.date)}</p>
+                      <p className="mt-2 break-words text-xs text-text-subtle">{formatDate(transaction.date)}</p>
                     </div>
 
                     <div className="flex items-start gap-2 text-right">
-                      <div>
-                        <p className={transaction.mode === 'credit' ? 'text-emerald-300' : 'text-rose-300'}>
+                      <div className="min-w-0">
+                        <p className={[transaction.mode === 'credit' ? 'text-emerald-300' : 'text-rose-300', 'whitespace-nowrap text-sm'].join(' ')}>
                           {transaction.mode === 'credit' ? <ArrowUpRight className="inline h-4 w-4" /> : <ArrowDownLeft className="inline h-4 w-4" />} {formatMoney(transaction.amount)}
                         </p>
-                        <p className="text-xs text-text-subtle">{transaction.mode === 'credit' ? 'Added to balance' : 'Spent from balance'}</p>
+                        <p className="break-words text-xs text-text-subtle">{transaction.mode === 'credit' ? 'Added to balance' : 'Spent from balance'}</p>
                       </div>
 
                       <button

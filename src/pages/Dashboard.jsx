@@ -15,18 +15,18 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-luxury px-6 py-8 md:px-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-luxury px-4 py-6 sm:px-6 md:px-8">
+      <div className="mx-auto w-full max-w-screen-xl">
         
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-10">
           <p className="text-luxury-gold text-xs font-medium tracking-widest uppercase">Financial Dashboard</p>
-          <h1 className="text-4xl md:text-5xl font-light text-text-primary mt-2">Your spending overview</h1>
-          <p className="text-text-secondary mt-4 max-w-md">Track and analyze your expenses in real-time with synced cloud storage</p>
+          <h1 className="mt-2 break-words text-3xl font-light text-text-primary sm:text-4xl md:text-5xl">Your spending overview</h1>
+          <p className="mt-4 max-w-md break-words text-text-secondary">Track and analyze your expenses in real-time with synced cloud storage</p>
         </div>
 
         {/* Summary Cards Grid - Asymmetric Layout */}
-        <section className="grid gap-5 mb-12">
+        <section className="mb-8 grid gap-5 sm:mb-10 md:mb-12">
           <div className="grid gap-5 md:grid-cols-3">
             <div className="md:col-span-1">
               <SummaryCard
@@ -56,7 +56,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Main Content Grid */}
-        <section className="grid gap-8 lg:grid-cols-3">
+        <section className="grid gap-6 lg:grid-cols-3 lg:gap-8">
           {/* Left Column - Expense List */}
           <div className="lg:col-span-2 space-y-6">
             
@@ -70,8 +70,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Expenses */}
-            <div className="card-luxury-elevated p-6 md:p-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="card-luxury-elevated p-4 sm:p-6 md:p-8">
+              <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-luxury-gold text-xs font-medium tracking-widest uppercase">Activity</p>
                   <h2 className="text-2xl font-light text-text-primary mt-2">Recent expenses</h2>
@@ -79,7 +79,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => exportCsv(expenses)}
-                  className="btn-luxury-secondary py-2 px-4 text-sm flex items-center gap-2 whitespace-nowrap"
+                  className="btn-luxury-secondary flex min-h-11 w-full items-center justify-center gap-2 px-4 py-2 text-sm sm:w-auto"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV
@@ -115,7 +115,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             
             {/* 7-Day Chart */}
-            <div className="card-luxury-elevated p-6">
+            <div className="card-luxury-elevated p-4 sm:p-6">
               <div className="mb-6">
                 <p className="text-luxury-gold text-xs font-medium tracking-widest uppercase">Analytics</p>
                 <h3 className="text-xl font-light text-text-primary mt-2">Last 7 days</h3>

@@ -30,15 +30,15 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="space-y-5">
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="space-y-5 overflow-x-hidden">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <SummaryCard label="Filtered total" value={formatMoney(totals.total)} hint="Based on chosen dates" />
         <SummaryCard label="Matched expenses" value={String(totals.count)} hint="Entries in view" tone="sage" />
         <SummaryCard label="Export ready" value="CSV" hint="One-click download" tone="blue" />
       </section>
 
       <section className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">Reports</p>
             <h2 className="mt-2 text-lg font-semibold text-text-primary">Date filters and exports</h2>
@@ -47,7 +47,7 @@ export default function ReportsPage() {
           <button
             type="button"
             onClick={() => exportCsv(filteredExpenses)}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/6 bg-white/[0.04] px-4 text-sm text-text-primary transition-colors duration-200 hover:bg-white/[0.07]"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/6 bg-white/[0.04] px-4 text-sm text-text-primary transition-colors duration-200 hover:bg-white/[0.07] sm:w-auto"
           >
             <Download className="h-4 w-4" />
             Download CSV

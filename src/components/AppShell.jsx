@@ -29,14 +29,14 @@ export default function AppShell() {
   const meta = routeMeta[location.pathname] || routeMeta['/dashboard'];
 
   return (
-    <div className="min-h-screen bg-page text-text-primary">
+    <div className="min-h-screen overflow-x-hidden bg-page text-text-primary">
       <div className="fixed inset-0 -z-10 bg-page-glow opacity-100" />
       <Sidebar />
 
-      <div className="lg:pl-72">
+      <div className="md:pl-72">
         <Navbar title={meta.title} subtitle={meta.subtitle} user={user} displayName={displayName} onLogout={logout} />
 
-        <main className="mx-auto w-full max-w-7xl px-4 pb-28 pt-5 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-screen-xl px-4 pb-24 pt-4 sm:px-6 md:pb-8 lg:px-8">
           <Outlet />
         </main>
       </div>

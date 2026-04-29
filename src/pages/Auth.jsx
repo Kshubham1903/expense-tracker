@@ -268,7 +268,7 @@ export default function AuthPage() {
             {/* Footer Text */}
             <p className="text-center text-text-subtle text-xs pt-2">
               {mode === 'login'
-                ? 'Forgot your password? Contact support.'
+                ? "Don't have an account? Sign up first."
                 : 'By signing up, you agree to our Terms.'}
             </p>
           </form>

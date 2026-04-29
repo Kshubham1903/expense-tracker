@@ -10,7 +10,7 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/6 bg-page/92 px-3 py-3 backdrop-blur-xl lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/6 bg-page/92 px-3 py-3 backdrop-blur-xl md:hidden">
       <div className="grid grid-cols-4 gap-2">
         {navItems.map((item) => {
           const Icon = item.icon;

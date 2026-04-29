@@ -5,7 +5,7 @@ export default function ProfilePage() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <div className="grid gap-5 overflow-x-hidden lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <section className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/6 bg-white/[0.04]">
@@ -18,20 +18,20 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-6 space-y-4 rounded-[1.25rem] border border-white/5 bg-white/[0.03] p-4 text-sm text-text-secondary">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <span>Email</span>
-            <span className="truncate text-text-primary">{user?.email}</span>
+            <span className="break-words text-text-primary sm:truncate">{user?.email}</span>
           </div>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <span>User UID</span>
-            <span className="truncate text-text-primary">{user?.uid}</span>
+            <span className="break-all text-text-primary sm:truncate">{user?.uid}</span>
           </div>
         </div>
 
         <button
           type="button"
           onClick={logout}
-          className="mt-5 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#e8ecef] px-4 text-sm font-semibold text-[#0f1419] transition-colors duration-200 hover:bg-white"
+          className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#e8ecef] px-4 text-sm font-semibold text-[#0f1419] transition-colors duration-200 hover:bg-white sm:w-auto"
         >
           Logout
         </button>

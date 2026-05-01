@@ -4,7 +4,8 @@ import { useBalances } from '../hooks/useBalances';
 import { ACCOUNT_OPTIONS, TRANSACTION_MODE_OPTIONS, getAccountLabel, getTransactionModeLabel } from '../utils/ledger';
 import { formatDate, formatMoney } from '../utils/expenses';
 import PremiumSelect from '../components/PremiumSelect';
-import PremiumDatePicker from '../components/PremiumDatePicker';
+import LimitedExpenseList from '../components/LimitedExpenseList';
+import ResponsiveDatePicker from '../components/ResponsiveDatePicker';
 
 const accountFilters = [{ value: 'all', label: 'All accounts' }, ...ACCOUNT_OPTIONS];
 
@@ -146,7 +147,7 @@ export default function BalancesPage() {
 
             <label>
               <span className="mb-2 block text-sm text-text-secondary">Date</span>
-              <PremiumDatePicker
+              <ResponsiveDatePicker
                 value={formState.date}
                 onChange={updateField('date')}
               />
@@ -198,15 +199,17 @@ export default function BalancesPage() {
             </label>
           </div>
 
-          <div className="mt-5 space-y-3">
-            {loading ? (
-              <LoadingRows />
-            ) : filteredTransactions.length ? (
-              filteredTransactions.map((transaction) => (
-                <article
-                  key={transaction.id}
-                  className="group rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]"
-                >
+          <div className="mt-5">
+            <LimitedExpenseList
+              expenses={filteredTransactions}
+              loading={loading}
+              error={error}
+              limit={10}
+              viewAllLink="/balances"
+              viewAllLabel="View all transactions"
+              itemSeparator={false}
+              renderItem={(transaction) => (
+                <article className="group rounded-[1.25rem] border border-white/5 bg-white/[0.03] px-4 py-4 transition-colors duration-200 hover:bg-white/[0.05]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -248,19 +251,14 @@ export default function BalancesPage() {
                     </div>
                   </div>
                 </article>
-              ))
-            ) : (
-              <div className="rounded-[1.25rem] border border-dashed border-white/8 bg-white/[0.02] px-5 py-8 text-center text-sm text-text-secondary">
-                No transactions in this filter yet.
-              </div>
-            )}
+              )}
+              emptyState={
+                <div className="rounded-[1.25rem] border border-dashed border-white/8 bg-white/[0.02] px-5 py-8 text-center text-sm text-text-secondary">
+                  No transactions in this filter yet.
+                </div>
+              }
+            />
           </div>
-
-          {error ? (
-            <div className="mt-5 rounded-[1.25rem] border border-state-error/30 bg-state-error/10 p-4 text-sm text-state-error">
-              {error}
-            </div>
-          ) : null}
         </div>
       </section>
     </div>

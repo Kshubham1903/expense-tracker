@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import ExpenseCard from '../components/ExpenseCard';
 import ExpenseForm from '../components/ExpenseForm';
+import LimitedExpenseList from '../components/LimitedExpenseList';
 import SummaryCard from '../components/SummaryCard';
 import { useExpenses } from '../hooks/useExpenses';
 import { formatMoney } from '../utils/expenses';
@@ -86,28 +87,19 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              <div className="space-y-1">
-                {loading ? (
-                  <LoadingRows />
-                ) : expenses.length ? (
-                  <>
-                    {expenses.map((expense, idx) => (
-                      <div key={expense.id}>
-                        <ExpenseCard expense={expense} onDelete={removeExpense} />
-                        {idx < expenses.length - 1 && <div className="luxury-separator my-3" />}
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <EmptyExpenses />
+              <LimitedExpenseList
+                expenses={expenses}
+                loading={loading}
+                error={error}
+                limit={10}
+                viewAllLink="/reports"
+                viewAllLabel="View all expenses"
+                itemSeparator={true}
+                renderItem={(expense) => (
+                  <ExpenseCard expense={expense} onDelete={removeExpense} />
                 )}
-              </div>
-
-              {error && (
-                <div className="mt-6 rounded-luxury border border-state-error/30 bg-state-error/10 p-4 text-sm text-state-error">
-                  {error}
-                </div>
-              )}
+                emptyState={<EmptyExpenses />}
+              />
             </div>
           </div>
 

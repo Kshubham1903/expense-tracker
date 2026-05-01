@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Download, Filter, Calendar } from 'lucide-react';
 import ExpenseCard from '../components/ExpenseCard';
-import PremiumDatePicker from '../components/PremiumDatePicker';
+import ResponsiveDatePicker from '../components/ResponsiveDatePicker';
 import SummaryCard from '../components/SummaryCard';
 import { useExpenses } from '../hooks/useExpenses';
 import { formatMoney } from '../utils/expenses';
@@ -83,7 +83,7 @@ export default function ReportsPage() {
           <div className="grid gap-4 sm:grid-cols-2 mb-6">
             <label>
               <span className="block text-text-secondary text-xs font-medium mb-2 uppercase tracking-wider">From date</span>
-              <PremiumDatePicker
+              <ResponsiveDatePicker
                 value={filters.startDate}
                 onChange={updateFilter('startDate')}
               />
@@ -91,7 +91,7 @@ export default function ReportsPage() {
 
             <label>
               <span className="block text-text-secondary text-xs font-medium mb-2 uppercase tracking-wider">To date</span>
-              <PremiumDatePicker
+              <ResponsiveDatePicker
                 value={filters.endDate}
                 onChange={updateFilter('endDate')}
               />

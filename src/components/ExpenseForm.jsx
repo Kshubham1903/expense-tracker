@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
-import PremiumDatePicker from './PremiumDatePicker';
+import ResponsiveDatePicker from './ResponsiveDatePicker';
 import { CATEGORY_OPTIONS } from '../utils/expenses';
 import { ACCOUNT_OPTIONS } from '../utils/ledger';
 import PremiumSelect from './PremiumSelect';
@@ -75,7 +75,7 @@ export default function ExpenseForm({ onSubmit, mutating }) {
 
           <label>
             <span className="mb-2 block text-sm text-text-secondary">Date</span>
-            <PremiumDatePicker
+            <ResponsiveDatePicker
               value={formState.expenseDate}
               onChange={updateField('expenseDate')}
             />

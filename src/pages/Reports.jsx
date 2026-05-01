@@ -38,7 +38,7 @@ export default function ReportsPage() {
         <SummaryCard label="Export ready" value="CSV" hint="One-click download" tone="blue" />
       </section>
 
-      <section className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+      <section className="relative overflow-visible rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[0.72rem] uppercase tracking-[0.28em] text-text-subtle">Reports</p>
@@ -79,7 +79,7 @@ export default function ReportsPage() {
         </div>
       </section>
 
-      <section className="rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
+      <section className="relative z-0 rounded-[1.5rem] border border-white/5 bg-surface/90 p-5 shadow-soft backdrop-blur">
         <h3 className="text-base font-semibold text-text-primary">Filtered list</h3>
 
         <div className="mt-4 space-y-3">

@@ -203,7 +203,7 @@ export default function AuthPage() {
                   required
                   value={formState.email}
                   onChange={updateField('email')}
-                  className="input-luxury pl-10 w-full bg-dark-card border border-gray-700 rounded-luxury text-text-primary placeholder:text-text-subtle"
+                  className="h-[48px] w-full rounded-xl border border-gray-700 bg-[#121212] pl-10 px-4 text-white placeholder-gray-500 outline-none transition-all duration-150 focus:border-[#C6A75E]"
                   placeholder="you@example.com"
                 />
               </div>
@@ -223,7 +223,7 @@ export default function AuthPage() {
                   minLength={6}
                   value={formState.password}
                   onChange={updateField('password')}
-                  className="input-luxury pl-10 pr-10 w-full bg-dark-card border border-gray-700 rounded-luxury text-text-primary placeholder:text-text-subtle"
+                  className="h-[48px] w-full rounded-xl border border-gray-700 bg-[#121212] pl-10 pr-10 px-4 text-white placeholder-gray-500 outline-none transition-all duration-150 focus:border-[#C6A75E]"
                   placeholder="Minimum 6 characters"
                 />
                 <button

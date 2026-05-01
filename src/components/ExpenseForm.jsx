@@ -46,41 +46,43 @@ export default function ExpenseForm({ onSubmit, mutating }) {
         </div>
       </div>
 
-      <form className="mt-5 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="sm:col-span-2">
+      <form className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
+        <label className="md:col-span-2">
           <span className="mb-2 block text-sm text-text-secondary">Description</span>
           <input
             value={formState.description}
             onChange={updateField('description')}
             placeholder="Dinner with clients"
-            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 placeholder:text-text-subtle focus:border-accent-sage/60"
+            className="h-[48px] w-full rounded-xl border border-gray-700 bg-[#121212] px-4 text-sm text-white placeholder-gray-500 outline-none transition-all duration-150 focus:border-[#C6A75E]"
             maxLength={80}
           />
         </label>
 
-        <label>
-          <span className="mb-2 block text-sm text-text-secondary">Amount</span>
-          <input
-            type="number"
-            inputMode="decimal"
-            step="0.01"
-            min="0"
-            value={formState.amount}
-            onChange={updateField('amount')}
-            placeholder="42.00"
-            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 placeholder:text-text-subtle focus:border-accent-sage/60"
-          />
-        </label>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label>
+            <span className="mb-2 block text-sm text-text-secondary">Amount</span>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              value={formState.amount}
+              onChange={updateField('amount')}
+              placeholder="42.00"
+              className="h-[48px] w-full rounded-xl border border-gray-700 bg-[#121212] px-4 text-sm text-white placeholder-gray-500 outline-none transition-all duration-150 focus:border-[#C6A75E]"
+            />
+          </label>
 
-        <label>
-          <span className="mb-2 block text-sm text-text-secondary">Date</span>
-          <PremiumDatePicker
-            value={formState.expenseDate}
-            onChange={updateField('expenseDate')}
-          />
-        </label>
+          <label>
+            <span className="mb-2 block text-sm text-text-secondary">Date</span>
+            <PremiumDatePicker
+              value={formState.expenseDate}
+              onChange={updateField('expenseDate')}
+            />
+          </label>
+        </div>
 
-        <label className="sm:col-span-2">
+        <label className="md:col-span-2">
           <span className="mb-2 block text-sm text-text-secondary">Category</span>
           <PremiumSelect
             value={formState.category}
@@ -94,7 +96,7 @@ export default function ExpenseForm({ onSubmit, mutating }) {
           </PremiumSelect>
         </label>
 
-        <label className="sm:col-span-2">
+        <label className="md:col-span-2">
           <span className="mb-2 block text-sm text-text-secondary">Payment mode</span>
           <PremiumSelect
             value={formState.paymentMode}
@@ -113,7 +115,7 @@ export default function ExpenseForm({ onSubmit, mutating }) {
         <button
           type="submit"
           disabled={mutating}
-          className="sm:col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#e8ecef] px-4 text-sm font-semibold text-[#0f1419] transition-colors duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+          className="h-[48px] w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#e8ecef] px-4 text-sm font-semibold text-[#0f1419] transition-all duration-150 hover:bg-white disabled:cursor-not-allowed disabled:opacity-70 md:col-span-2"
         >
           <CirclePlus className="h-4 w-4" />
           {mutating ? 'Saving...' : 'Add expense'}

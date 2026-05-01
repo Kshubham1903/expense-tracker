@@ -18,21 +18,20 @@ export default function Navbar({ title, subtitle, user, onLogout, displayName })
           {subtitle ? <p className="mt-1 truncate text-xs text-text-secondary sm:text-sm">{subtitle}</p> : null}
         </div>
 
-        <div className="flex shrink-0 items-center justify-between gap-2 sm:gap-4">
+        <div className="flex shrink-0 items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-2 rounded-full border border-white/6 bg-white/[0.04] px-2.5 py-1.5 sm:gap-3 sm:px-3 sm:py-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/6 bg-white/[0.02] text-sm font-semibold text-luxury-gold">
               {initialsFromName(displayName)}
             </div>
             <div className="flex min-w-0 flex-col leading-tight">
-              <p className="max-w-[90px] truncate text-sm font-medium text-white sm:max-w-[120px]">{displayName || user?.email}</p>
-              <p className="text-xs text-gray-400">Authed session</p>
+              <p className="max-w-[120px] truncate text-sm font-medium text-white">{displayName || user?.email}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onLogout}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/6 bg-elevated/80 px-4 text-sm text-text-primary transition-colors duration-200 hover:bg-white/8"
+            className="hidden h-10 items-center justify-center gap-2 rounded-full border border-white/6 bg-elevated/80 px-4 text-sm text-text-primary transition-colors duration-200 hover:bg-white/8 md:inline-flex"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Logout</span>

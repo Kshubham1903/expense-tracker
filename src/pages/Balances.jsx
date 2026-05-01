@@ -3,6 +3,8 @@ import { ArrowDownLeft, ArrowUpRight, PlusCircle, Trash2 } from 'lucide-react';
 import { useBalances } from '../hooks/useBalances';
 import { ACCOUNT_OPTIONS, TRANSACTION_MODE_OPTIONS, getAccountLabel, getTransactionModeLabel } from '../utils/ledger';
 import { formatDate, formatMoney } from '../utils/expenses';
+import PremiumSelect from '../components/PremiumSelect';
+import PremiumDatePicker from '../components/PremiumDatePicker';
 
 const accountFilters = [{ value: 'all', label: 'All accounts' }, ...ACCOUNT_OPTIONS];
 
@@ -102,32 +104,30 @@ export default function BalancesPage() {
           <form className="mt-5 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
             <label>
               <span className="mb-2 block text-sm text-text-secondary">Select account</span>
-              <select
+              <PremiumSelect
                 value={formState.type}
                 onChange={updateField('type')}
-                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
               >
                 {ACCOUNT_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </PremiumSelect>
             </label>
 
             <label>
               <span className="mb-2 block text-sm text-text-secondary">Type</span>
-              <select
+              <PremiumSelect
                 value={formState.mode}
                 onChange={updateField('mode')}
-                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
               >
                 {TRANSACTION_MODE_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </PremiumSelect>
             </label>
 
             <label>
@@ -146,11 +146,9 @@ export default function BalancesPage() {
 
             <label>
               <span className="mb-2 block text-sm text-text-secondary">Date</span>
-              <input
-                type="date"
+              <PremiumDatePicker
                 value={formState.date}
                 onChange={updateField('date')}
-                className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
               />
             </label>
 
@@ -187,17 +185,16 @@ export default function BalancesPage() {
 
             <label className="w-full min-w-0 sm:w-auto sm:min-w-[11rem]">
               <span className="sr-only">Filter by account</span>
-              <select
+              <PremiumSelect
                 value={filter}
                 onChange={(event) => setFilter(event.target.value)}
-                className="min-h-11 w-full rounded-full border border-white/6 bg-white/[0.04] px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
               >
                 {accountFilters.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </PremiumSelect>
             </label>
           </div>
 

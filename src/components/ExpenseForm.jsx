@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
+import PremiumDatePicker from './PremiumDatePicker';
 import { CATEGORY_OPTIONS } from '../utils/expenses';
 import { ACCOUNT_OPTIONS } from '../utils/ledger';
+import PremiumSelect from './PremiumSelect';
 
 const initialState = {
   description: '',
@@ -72,42 +74,38 @@ export default function ExpenseForm({ onSubmit, mutating }) {
 
         <label>
           <span className="mb-2 block text-sm text-text-secondary">Date</span>
-          <input
-            type="date"
+          <PremiumDatePicker
             value={formState.expenseDate}
             onChange={updateField('expenseDate')}
-            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
           />
         </label>
 
         <label className="sm:col-span-2">
           <span className="mb-2 block text-sm text-text-secondary">Category</span>
-          <select
+          <PremiumSelect
             value={formState.category}
             onChange={updateField('category')}
-            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
           >
             {CATEGORY_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
             ))}
-          </select>
+          </PremiumSelect>
         </label>
 
         <label className="sm:col-span-2">
           <span className="mb-2 block text-sm text-text-secondary">Payment mode</span>
-          <select
+          <PremiumSelect
             value={formState.paymentMode}
             onChange={updateField('paymentMode')}
-            className="min-h-12 w-full rounded-2xl border border-white/6 bg-elevated px-4 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-accent-sage/60"
           >
             {ACCOUNT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
-          </select>
+          </PremiumSelect>
         </label>
 
         {error ? <p className="sm:col-span-2 text-sm text-[#c9a7a4]">{error}</p> : null}

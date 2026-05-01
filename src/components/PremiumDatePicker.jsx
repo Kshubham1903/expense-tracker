@@ -166,8 +166,8 @@ export default function PremiumDatePicker({ value = '', onChange, className = ''
         ? createPortal(
             <div
               data-datepicker-portal
-              className="z-[999] overflow-visible rounded-xl border border-gray-700 bg-[#161616] p-3 shadow-[0_18px_40px_rgba(0,0,0,0.55)]"
-              style={portalStyle}
+              className="pointer-events-auto z-[999] min-w-72 rounded-xl border border-gray-700/50 bg-gradient-to-br from-gray-900 to-gray-800 p-4 shadow-2xl"
+              style={{ ...portalStyle, minWidth: '288px' }}
             >
               <DayPicker
                 mode="single"
@@ -178,38 +178,42 @@ export default function PremiumDatePicker({ value = '', onChange, className = ''
                 showOutsideDays
                 captionLayout="buttons"
                 classNames={{
-                  root: 'w-full text-white',
+                  root: 'w-full',
                   months: 'w-full',
-                  month: 'w-full space-y-3',
-                  month_caption: 'relative flex items-center justify-center pb-2',
-                  caption_label: 'text-sm font-medium tracking-wide text-white',
-                  nav: 'flex items-center justify-between',
+                  month: 'w-full',
+                  month_caption: 'mb-4 flex items-center justify-between px-1',
+                  caption_label: 'text-sm font-semibold text-white',
+                  nav: 'flex gap-1 items-center',
+                  nav_button: 'h-6 w-6 bg-transparent p-0',
                   button_previous:
-                    'inline-flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-gray-300 transition-all duration-150 hover:border-gray-700 hover:bg-[#1f1f1f] hover:text-white',
+                    'inline-flex h-6 w-6 items-center justify-center rounded-md border border-transparent text-gray-400 transition-all duration-150 hover:border-gray-600 hover:bg-gray-700 hover:text-white active:bg-gray-600',
                   button_next:
-                    'inline-flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-gray-300 transition-all duration-150 hover:border-gray-700 hover:bg-[#1f1f1f] hover:text-white',
+                    'inline-flex h-6 w-6 items-center justify-center rounded-md border border-transparent text-gray-400 transition-all duration-150 hover:border-gray-600 hover:bg-gray-700 hover:text-white active:bg-gray-600',
                   chevron: 'h-4 w-4',
-                  weekdays: 'grid grid-cols-7 gap-1 px-1 pt-2 text-[0.75rem] uppercase tracking-[0.2em] text-gray-400',
-                  weekday: 'flex items-center justify-center py-2',
-                  month_grid: 'w-full border-collapse',
-                  weeks: 'space-y-1',
-                  week: 'grid grid-cols-7 gap-1',
-                  day: 'h-10 w-full',
+                  weekdays: 'grid grid-cols-7 gap-2 mb-2',
+                  weekday: 'text-center text-xs font-semibold text-gray-500 py-2',
+                  month_grid: 'w-full',
+                  weeks: 'space-y-2',
+                  week: 'grid grid-cols-7 gap-2',
+                  day: 'relative p-0 text-center',
                   day_button:
-                    'flex h-10 w-full items-center justify-center rounded-lg text-sm text-gray-300 transition-all duration-150 ease-out hover:bg-[#1f1f1f] hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C6A75E]/50',
-                  outside: 'text-gray-600',
-                  disabled: 'text-gray-600 opacity-40',
-                  today: 'border border-[#C6A75E]',
-                  selected: 'bg-[#C6A75E] text-black hover:bg-[#C6A75E] hover:text-black rounded-lg',
+                    'relative inline-flex h-8 w-8 items-center justify-center rounded-md text-xs font-medium text-gray-300 transition-all duration-200 hover:bg-gray-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/50 disabled:text-gray-600 disabled:opacity-40',
+                  outside: 'text-gray-500',
+                  disabled: 'text-gray-600 opacity-40 cursor-not-allowed',
+                  today: 'border border-yellow-500/50 bg-yellow-500/10 text-yellow-300 font-semibold',
+                  selected: 'bg-yellow-500 text-gray-900 font-semibold hover:bg-yellow-500',
+                  range_start: 'rounded-r-none',
+                  range_end: 'rounded-l-none',
+                  range_middle: 'bg-yellow-500/20 rounded-none',
                 }}
               />
 
-              <div className="mt-3 flex items-center justify-between gap-3 border-t border-gray-700 pt-3">
+              <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-700/50 pt-3">
                 <button
                   type="button"
                   onClick={handleToday}
                   disabled={disabled}
-                  className="inline-flex min-h-9 items-center justify-center rounded-lg border border-gray-700 px-3 text-xs text-gray-200 transition-colors duration-150 hover:bg-[#1f1f1f] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex-1 rounded-md border border-gray-700 bg-gray-700/30 px-3 py-1.5 text-xs font-medium text-gray-300 transition-all duration-150 hover:bg-gray-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 active:bg-gray-600"
                 >
                   Today
                 </button>
@@ -218,7 +222,7 @@ export default function PremiumDatePicker({ value = '', onChange, className = ''
                   type="button"
                   onClick={handleClear}
                   disabled={disabled || !value}
-                  className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border border-gray-700 px-3 text-xs text-gray-200 transition-colors duration-150 hover:bg-[#1f1f1f] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-gray-700 bg-gray-700/30 px-3 py-1.5 text-xs font-medium text-gray-300 transition-all duration-150 hover:bg-gray-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 active:bg-gray-600"
                 >
                   <X className="h-3.5 w-3.5" />
                   Clear
